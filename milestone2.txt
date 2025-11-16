@@ -1,0 +1,7 @@
+Implement the following features:
+
+User authentication (login/register)
+Persistent database (PostgreSQL)
+Due dates + filtering
+Light/dark theme
+Drag & drop reorder
