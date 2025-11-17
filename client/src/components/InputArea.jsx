@@ -3,6 +3,7 @@ import { useState } from "react";
 
 function InputArea(props) {
     const [task, setTask] = useState({title: "", description: ""})
+    
     function handleInput(event) {
         const {name, value} = event.target
         setTask((prevValues) => {

@@ -1,9 +1,9 @@
 implement the following features: 
 
-Add todos
-Edit todos
-Delete todos
-Mark complete / incomplete
+✅ Add todos
+✅ Edit todos
+✅ Delete todos
+✅ Mark complete / incomplete
 
 /////////////////////////////////////////
 
@@ -14,3 +14,4 @@ get hold of the input data and create a todoitem
 add a delete button to each todoitem 
 add an edit button to each todoitem to edit
 add a toggle button for marking complete/incomplete
+
