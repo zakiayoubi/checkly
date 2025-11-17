@@ -1,13 +1,45 @@
-import express from "express"
+import express from "express";
+import cors from "cors";
+import bcrypt from "bcrypt";
 
-const port = 3000
+const app = express();
+const port = 3000;
 
-const App = express()
+// Allow localhost:5173 to talk to backend
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 
-App.get("/", (req, res) => {
-    res.send("Checkly API is running.")
-})
+// Parse JSON bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-App.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-})
+// ----- API ROUTES -----
+
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+
+  console.log("Username:", username);
+  console.log("Password:", password);
+
+  res.json({ message: "received register data" });
+});
+
+app.post("/login", (req, res) => {
+  res.json({ message: "login endpoint" });
+});
+
+app.get("/logout", (req, res) => {
+  res.json({ message: "logout endpoint" });
+});
+
+app.get("/me", (req, res) => {
+  res.json({ message: "me endpoint" });
+});
+
+// ----------------------
+
+app.listen(port, () => {
+  console.log(`Server running on ${port}`);
+});

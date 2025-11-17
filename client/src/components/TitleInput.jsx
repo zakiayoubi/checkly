@@ -1,6 +1,6 @@
 import React from "react";
 
-function TitleInput() {
+function TitleInput(props) {
     const [titleInput, setTitleInput] = useState("")
     
     function handleInput(event) {
@@ -9,6 +9,7 @@ function TitleInput() {
     }
     return (
         <input 
+            
             onChange={handleInput}
             name="title" 
             placeholder="task title"
