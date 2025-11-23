@@ -28,9 +28,8 @@ function Login() {
     })
 
     const data = await response.json();
-    console.log(data)
     if (data.success) {
-      navigate("/")
+      navigate("/todos")
     } else {
       alert(data.message)
     }

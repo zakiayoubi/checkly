@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Task(props) {
-
     const [editMode, setEditMode] = useState(false)
+    const [editedTask, setEditedTask] = useState({id: props.task.id, title: props.task.title, description: props.task.description})
 
     function editTask() {
         setEditMode((prevValue) => {
@@ -10,8 +10,6 @@ function Task(props) {
         })
     }
 
-    const [editedTask, setEditedTask] = useState({title: props.task.title, description: props.task.description})
-    
     function handleChanges(event) {
         const {name, value} = event.target
         setEditedTask((prevValues) => {
@@ -24,28 +22,28 @@ function Task(props) {
     return (
         <div>
             <input type="checkbox" />
-
             {
             editMode ? 
-            <input onChange={handleChanges} name="title" placeholder="task title" value={editedTask.title}/> 
+            <input onChange={handleChanges} name="title" placeholder="task title" value={editedTask.title}
+            /> 
             : 
-            <h1>{props.task.title}</h1>
+            <h1>{editedTask.title}</h1>
             }
 
             {
             editMode ? 
             <textarea onChange={handleChanges} name="description" placeholder="description" value={editedTask.description}/> 
             : 
-            <p>{props.task.description}</p>
+            <p>{editedTask.description}</p>
             }
             
             {!editMode ? <button onClick={editTask} type="submit">edit</button> : null}
-            {!editMode ? <button onClick={() => {props.onDelete(props.id)}} type="submit">delete</button> : null}
+            {!editMode ? <button onClick={() => {props.onDelete(props.task.id)}} type="submit">delete</button> : null}
             {
             editMode ? 
             <button 
             onClick={() => {
-                props.onEdit(editedTask, props.id)
+                props.onEdit(editedTask)
                 editTask()
             }} type="submit">save</button>
             :

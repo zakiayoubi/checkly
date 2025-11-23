@@ -34,7 +34,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: false,
-      maxAge: 1000 * 60 // one minute
+      maxAge: 1000 * 60 * 60 // one hour
     }
   })
 )
@@ -94,7 +94,7 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res, next) => {
-  passport.authenticate("local", (err, user) => {
+  passport.authenticate("local", async(err, user) => {
     if (err) {
       console.log(err);
       return res.json({
@@ -106,7 +106,7 @@ app.post("/login", async (req, res, next) => {
         success: false,
         message: "Invalid email or password"})
     }
-    req.logIn(user, (err) => {
+    await req.logIn(user, (err) => {
       if (err) {
         return res.json({message: "Login failed"})
       }
@@ -142,9 +142,72 @@ function ensureAuthenticated(req, res, next) {
 }
 
 
-app.get("/", ensureAuthenticated, (req, res) => {
-  res.json({ user: req.user, message: "welcome" });
+app.get("/", async (req, res) => {
+  res.json({ message: "home page"});
+
 });
+
+
+app.get("/todos", ensureAuthenticated, async(req, res) => {
+  const result = await db.query("SELECT * FROM todos WHERE user_id = $1", [req.user.id])
+  const output = result.rows
+  res.json({ todos:  output});
+
+})
+
+app.post("/todos", ensureAuthenticated, async(req, res) => {
+  const {title, description} = req.body.task
+  try {
+    const result = await db.query(
+      "INSERT INTO todos (user_id, title, description) VALUES ($1, $2, $3) RETURNING *",
+      [req.user.id, title, description]
+    )
+    console.log(result.rows)
+    if (result.rowCount === 1) {
+      res.json({success: true, message: "Task added."})
+    }
+
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.put("/todos", ensureAuthenticated, async(req, res) => {
+
+  const {id: updatedTaskId, title: updatedTitle, description: updatedDescription } = req.body.updatedTask
+
+  try {
+    const result = await db.query(
+      "UPDATE todos SET title = $1, description = $2 WHERE id = $3 RETURNING *", 
+      [updatedTitle, updatedDescription, updatedTaskId]
+    )
+    console.log(result.rows[0])
+    res.json({message: "Task updated successfully."})
+  } catch (err) {
+    res.json({message: "Task update failed."})
+    console.log(err)
+  }
+})
+
+app.delete("/todos", ensureAuthenticated, async(req, res) => {
+  const taskId = req.body.taskId
+  try {
+    const result = await db.query(
+    "DELETE from todos WHERE id = $1 returning *", [taskId]
+    )
+    if (result.rowCount === 0) {
+      return res.status(404).json({sucess: false, message: "Task not found"})
+    }
+
+    res.json({sucess: true, message: "Task deleted"})
+  }
+
+  catch (err) {
+    console.log(err)
+  }
+  
+})
+
 
 // ----------------------
 passport.use(

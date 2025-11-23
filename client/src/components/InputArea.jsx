@@ -1,9 +1,8 @@
-import React from "react";
 import { useState } from "react";
 
 function InputArea(props) {
     const [task, setTask] = useState({title: "", description: ""})
-    
+
     function handleInput(event) {
         const {name, value} = event.target
         setTask((prevValues) => {
@@ -11,6 +10,23 @@ function InputArea(props) {
                 ...prevValues, [name]: value
             }
         })
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        const response = await fetch("http://localhost:3000/todos", {
+            method: "POST",
+            headers: {"content-type": "application/json"},
+            body: JSON.stringify({task}),
+            credentials: "include"
+        })
+
+        setTask({title: "", description: ""})
+        console.log(response)
+        if (response.ok) {
+            await props.onFetch()
+        }
+                
     }
 
     return (
@@ -29,11 +45,7 @@ function InputArea(props) {
                 value={task.description}
                 />
                 <button 
-                onClick={(event) => {
-                    event.preventDefault();
-                    props.onAdd(task)
-                    setTask({title: "", description: ""})
-                }}
+                onClick={handleSubmit}
                 type="submit"
                 >
                 Add
