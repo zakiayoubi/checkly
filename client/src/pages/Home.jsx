@@ -1,4 +1,8 @@
 import { useNavigate } from 'react-router-dom'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import Button from '@mui/material/Button';
+
 
 // future improvement:
 // create a sample inpuArea and sample todos for users to interact with. 
@@ -14,10 +18,14 @@ function Home() {
     }
   }
   return (
-    <div>
+    <div className='home'>
+      <Header />
       <h1>Welcome to Checkly. Use Login or Sign up</h1>
-      <button onClick={handleClick} name="login" type="submit">Login</button>
-      <button onClick={handleClick} name="register" type="submit">Register</button>
+      <div>
+        <Button onClick={handleClick} name="login" type="submit" variant="contained">Login</Button>
+      </div>
+      <Button onClick={handleClick} name="register" type="submit" variant="contained">Register</Button>
+      <Footer />
     </div>
   )
 }

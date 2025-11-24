@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Checkbox from "./Checkbox";
 
 function Task(props) {
     const [editMode, setEditMode] = useState(false)
-    const [editedTask, setEditedTask] = useState({id: props.task.id, title: props.task.title, description: props.task.description})
+    const [editedTask, setEditedTask] = useState({
+        taskId: props.task.id, 
+        priority: props.task.priority, 
+        title: props.task.title, 
+        description: props.task.description,
+        completed: props.task.completed
+    })
+    console.log(editedTask.completed)
 
     function editTask() {
         setEditMode((prevValue) => {
@@ -19,9 +27,33 @@ function Task(props) {
         })
     }
 
+    async function handleCheckBox(event) {
+        const checked = event.target.checked
+        console.log(checked)
+
+        setEditedTask((prev) => {
+            return {...prev, completed: checked}
+        })
+        // SEND EXACTLY WHAT SERVER EXPECTS
+        await fetch("http://localhost:3000/todos", {
+            method: "PUT",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+            updatedTask: {
+                taskId: props.task.id,
+                completed: checked
+            }
+            })
+        });
+
+        
+    }
+
+
     return (
         <div>
-            <input type="checkbox" />
+            <Checkbox onCheck={handleCheckBox} checked={editedTask.completed}/>
             {
             editMode ? 
             <input onChange={handleChanges} name="title" placeholder="task title" value={editedTask.title}
@@ -36,9 +68,29 @@ function Task(props) {
             : 
             <p>{editedTask.description}</p>
             }
+            {
+            editMode ? 
+            <select name="priority" onChange={handleChanges} value={editedTask.priority}>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+            :
+            <p style={{color: "red"}}>{editedTask.priority}</p>
+            }
             
+
             {!editMode ? <button onClick={editTask} type="submit">edit</button> : null}
             {!editMode ? <button onClick={() => {props.onDelete(props.task.id)}} type="submit">delete</button> : null}
+            {
+            editMode ? 
+            <button 
+            onClick={() => {
+                editTask()
+            }} type="submit">cancel</button>
+            :
+            null}
             {
             editMode ? 
             <button 
@@ -48,6 +100,7 @@ function Task(props) {
             }} type="submit">save</button>
             :
             null}
+
             
         </div>
     )

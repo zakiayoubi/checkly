@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomInput from "../components/CustomInput";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Register() {
   const navigate = useNavigate()
@@ -42,39 +44,44 @@ function Register() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <CustomInput
-      type="text"
-      name="fname"
-      placeholder="first name"
-      value={input.fname}
-      onChange={handleChange}
-      />
-      <CustomInput
-      type="text"
-      name="lname"
-      placeholder="last name"
-      value={input.lname}
-      onChange={handleChange}
-      />
-      <CustomInput
-      type="text"
-      name="email"
-      placeholder="email"
-      value={input.email}
-      onChange={handleChange}
-      />
-
-      <CustomInput
-        type="password"
-        name="password"
-        value={input.password}
-        placeholder="password"
+    <div>
+      <Header />
+      <form onSubmit={handleSubmit}>
+        <CustomInput
+        type="text"
+        name="fname"
+        placeholder="first name"
+        value={input.fname}
         onChange={handleChange}
-      />
+        />
+        <CustomInput
+        type="text"
+        name="lname"
+        placeholder="last name"
+        value={input.lname}
+        onChange={handleChange}
+        />
+        <CustomInput
+        type="text"
+        name="email"
+        placeholder="email"
+        value={input.email}
+        onChange={handleChange}
+        />
 
-      <button type="submit">Register</button>
-    </form>
+        <CustomInput
+          type="password"
+          name="password"
+          value={input.password}
+          placeholder="password"
+          onChange={handleChange}
+        />
+
+        <button type="submit">Register</button>
+      </form>
+      <Footer />
+    </div>
+    
   );
 }
 

@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import pg from "pg";
 import dotenv from "dotenv";
 import passport from "passport";
+const { deserializeUser, serializeUser } = passport;
 import {Strategy} from "passport-local";
 import session from "express-session";
 
@@ -156,11 +157,12 @@ app.get("/todos", ensureAuthenticated, async(req, res) => {
 })
 
 app.post("/todos", ensureAuthenticated, async(req, res) => {
-  const {title, description} = req.body.task
+  const {priority, title, description} = req.body.task
+  console.log(priority, title, description)
   try {
     const result = await db.query(
-      "INSERT INTO todos (user_id, title, description) VALUES ($1, $2, $3) RETURNING *",
-      [req.user.id, title, description]
+      "INSERT INTO todos (user_id, priority, title, description) VALUES ($1, $2, $3, $4) RETURNING *",
+      [req.user.id, priority, title, description]
     )
     console.log(result.rows)
     if (result.rowCount === 1) {
@@ -173,21 +175,29 @@ app.post("/todos", ensureAuthenticated, async(req, res) => {
 })
 
 app.put("/todos", ensureAuthenticated, async(req, res) => {
+  const {completed, 
+        priority,
+        taskId, 
+        title, 
+        description } = req.body.updatedTask
 
-  const {id: updatedTaskId, title: updatedTitle, description: updatedDescription } = req.body.updatedTask
 
-  try {
-    const result = await db.query(
-      "UPDATE todos SET title = $1, description = $2 WHERE id = $3 RETURNING *", 
-      [updatedTitle, updatedDescription, updatedTaskId]
-    )
-    console.log(result.rows[0])
-    res.json({message: "Task updated successfully."})
-  } catch (err) {
-    res.json({message: "Task update failed."})
-    console.log(err)
-  }
+  const updates = []
+  const values = []
+  let paramCount = 1
+
+  if (title !== undefined) {updates.push(`title = $${paramCount++}`); console.log(paramCount); values.push(title)} 
+  if (description !== undefined) {updates.push(`description = $${paramCount++}`);console.log(paramCount); values.push(description)}
+  if (priority !== undefined) {updates.push(`priority = $${paramCount++}`); console.log(paramCount); values.push(priority)}
+  if (completed !== undefined) {updates.push(`completed = $${paramCount++}`); values.push(completed)}
+
+  values.push(taskId)
+
+  const query = `UPDATE todos set ${updates.join(", ")} WHERE id = $${paramCount} AND user_id = $${paramCount + 1} RETURNING *`
+
+  const result = await db.query(query, [...values, req.user.id])
 })
+
 
 app.delete("/todos", ensureAuthenticated, async(req, res) => {
   const taskId = req.body.taskId

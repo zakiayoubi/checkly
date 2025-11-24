@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom"
 import CustomInput from "../components/CustomInput";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Login() {
   const navigate = useNavigate()
@@ -37,25 +39,30 @@ function Login() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <CustomInput
-      type="text"
-      name="email"
-      placeholder="email"
-      value={input.email}
-      onChange={handleChange}
-      />
+    <div>
+      <Header />
+        <form onSubmit={handleSubmit}>
+          <CustomInput
+          type="text"
+          name="email"
+          placeholder="email"
+          value={input.email}
+          onChange={handleChange}
+          />
 
-      <CustomInput
-        type="password"
-        name="password"
-        value={input.password}
-        placeholder="password"
-        onChange={handleChange}
-      />
+          <CustomInput
+            type="password"
+            name="password"
+            value={input.password}
+            placeholder="password"
+            onChange={handleChange}
+          />
 
-      <button type="submit">Login</button>
-    </form>
+          <button type="submit">Login</button>
+        </form>
+      <Footer />
+    </div>
+    
   );
 }
 

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InputArea from "../components/InputArea"
 import Task from "../components/Task"
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 function Todos() {
   // state hook to keep a list of the tasks
@@ -32,6 +34,7 @@ async function fetchTodos() {
 
 
   async function editTask(updatedTask) {
+    console.log(updatedTask)
     await fetch("http://localhost:3000/todos", {
         method: "PUT",
         credentials: "include",
@@ -46,6 +49,7 @@ async function fetchTodos() {
   }
 
   async function deleteTask(taskId) {
+    console.log(taskId)
     try {
         const res = await fetch("http://localhost:3000/todos", {
         method: "DELETE",
@@ -53,7 +57,6 @@ async function fetchTodos() {
         headers: {"content-type": "application/json"},
         body: JSON.stringify({taskId})
         })
-        console.log(res)
         if (!res.ok) {
             throw new Error("Delete failed.")
         }
@@ -73,6 +76,7 @@ async function fetchTodos() {
 
   return (
     <div>
+      <Header />
       <InputArea onFetch={fetchTodos}/>
       {taskList.map(task => (
         <Task 
@@ -82,6 +86,7 @@ async function fetchTodos() {
             task={task}
         />
        ))}
+      <Footer />
     </div>
   )
 }
