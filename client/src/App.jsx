@@ -1,8 +1,8 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom"
-import Register from "./pages/Register"
-import Login from "./pages/Login"
-import Home from "./pages/Home"
-import Todos from "./pages/Todos"
+import Register from "../src/pages/Register/Register"
+import Login from "../src/pages/Login/Login"
+import Home from "./pages/Home/Home"
+import Todos from "../src/pages/Todos/Todos"
 
 
 function App() {
