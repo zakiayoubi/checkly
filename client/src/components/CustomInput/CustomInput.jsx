@@ -1,22 +1,3 @@
-// function CustomInput(props) {
-
-//     return (
-//         <input 
-//             onChange={(event) => {
-//                 props.onChange(event)
-//             }}
-//             type={props.type}
-//             name={props.name}
-//             placeholder={props.placeholder}
-//             value={props.value}
-//             required
-//         />
-//     )
-// }
-
-
-// export default CustomInput;
-
 import styles from './CustomInput.module.css';
 
 function CustomInput(props) {

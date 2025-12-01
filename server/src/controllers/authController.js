@@ -28,7 +28,11 @@ export async function register(req, res) {
 
 export function logout(req, res) {
   req.logout(() => {
-    req.session.destroy(() => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Session destroy failed.", err)
+        res.status(500).json({success: false, message: "logout failed."})
+      }
       res.clearCookie("sid");
       res.json({ success: true, message: "Logged out" });
     });

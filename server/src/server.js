@@ -30,5 +30,12 @@ app.use("/api", todoRoutes);
 
 app.get("/", (req, res) => res.json({ message: "API is alive!" }));
 
-const port = process.env.SERVERPORT || 3000;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+// process.env.NODE_ENV is provided by jest and its values are usally: 'test', 'production', or 'development
+// while testing its value will be = 'test' otherwise undefined. 
+
+if (process.env.NODE_ENV !== "test") {
+  const port = process.env.SERVERPORT || 3000;
+  app.listen(port, () => console.log(`Server running on port ${port}`));
+}
+
+export default app;
